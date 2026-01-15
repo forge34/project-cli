@@ -25,13 +25,7 @@ func ParseTemplate(fsys fs.FS, name string) (TemplateConfig, error) {
 	if name == "" {
 		return TemplateConfig{}, ErrEmptyTemplateName
 	}
-
-	sub, err := fs.Sub(fsys, name)
-	if err != nil {
-		return TemplateConfig{}, err
-	}
-
-	buf, err := fs.ReadFile(sub, "template.json")
+	buf, err := fs.ReadFile(fsys, "template.json")
 	if err != nil {
 		return TemplateConfig{}, ErrTemplateNotFound
 	}
