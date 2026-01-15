@@ -6,7 +6,7 @@ build:
 	go build -o $(BINARY) ./cmd/app
 
 run:
-	go run ./cmd/$(APP) --template=express-ts create server
+	go run ./cmd/app create express-ts server
 
 test:
 	go test ./...
