@@ -1,15 +1,67 @@
 package generator
 
 import (
+	"bufio"
 	"errors"
+	"fmt"
 	"io"
 	"io/fs"
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
+	"text/template"
 )
 
 var ErrEmptyTemplate = errors.New("template name cannot be empty")
+
+func promptUser(prompts TemplateConfig) (map[string]string, error) {
+	reader := bufio.NewReader(os.Stdin)
+
+	ask := func(label string) (string, error) {
+		fmt.Print(label + " ")
+		s, err := reader.ReadString('\n')
+		if err != nil {
+			return "", err
+		}
+		return strings.TrimSpace(s), nil
+	}
+	answers := make(map[string]string)
+	for _, v := range prompts.Prompts {
+		ans, err := ask(v.Prompt)
+		if err != nil {
+			return make(map[string]string), nil
+		}
+
+		answers[v.Name] = ans
+	}
+
+	return answers, nil
+}
+
+func CopyFileWithTemplate(
+	src fs.FS,
+	relPath string,
+	dstPath string,
+	vars map[string]string,
+) error {
+	tmpl, err := template.ParseFS(src, relPath)
+	if err != nil {
+		return err
+	}
+
+	if err := os.MkdirAll(filepath.Dir(dstPath), 0o755); err != nil {
+		return err
+	}
+
+	out, err := os.Create(dstPath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	return tmpl.Execute(out, vars)
+}
 
 func CopyFile(src fs.FS, srcPath, dstPath string) error {
 	in, err := src.Open(srcPath)
