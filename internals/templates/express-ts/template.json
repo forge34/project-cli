@@ -1,0 +1,7 @@
+{
+  "prompts": [
+    { "name": "ProjectName", "prompt": "Enter project name" },
+    { "name": "Author", "prompt": "Enter author name" },
+    { "name": "Description", "prompt": "Enter project description" }
+  ]
+}
