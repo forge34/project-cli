@@ -35,6 +35,11 @@ func main() {
 			panic(err)
 		}
 		os.Exit(0)
+	case "list":
+		if err := generator.ListTempaltes(generator.Templates); err != nil {
+			panic(err)
+		}
+		os.Exit(0)
 
 	default:
 		fmt.Println("Invalid command")

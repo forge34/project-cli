@@ -100,3 +100,33 @@ func TemplateExists(fsys fs.FS, name string) (bool, error) {
 
 	return false, err
 }
+
+func ListTempaltes(fsys fs.FS) error {
+	maxDepth := 2
+	err := fs.WalkDir(fsys, ".", func(rel string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		depth := strings.Count(rel, string(os.PathSeparator)) 
+
+		if d.Name() == "." {
+			return nil
+		}
+
+		if depth >= maxDepth {
+			return fs.SkipDir
+		}
+
+		if d.IsDir() && depth == 1 {
+			fmt.Println(d.Name())
+		}
+
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

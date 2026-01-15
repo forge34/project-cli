@@ -11,10 +11,10 @@ import (
 	"strings"
 )
 
-// Embed the entire directory.
+// Templates Embed the entire directory.
 //
 //go:embed templates/*
-var templates embed.FS
+var Templates embed.FS
 
 type (
 	Generator struct{}
@@ -23,7 +23,7 @@ type (
 var ErrNotExist = errors.New("template doesn't exist")
 
 func (g *Generator) Generate(tempName string, dst string) error {
-	found, err := TemplateExists(templates, tempName)
+	found, err := TemplateExists(Templates, tempName)
 	if err != nil {
 		return err
 	}
@@ -34,7 +34,7 @@ func (g *Generator) Generate(tempName string, dst string) error {
 
 	base := path.Join("templates", tempName)
 
-	sub, err := fs.Sub(templates, base)
+	sub, err := fs.Sub(Templates, base)
 	if err != nil {
 		return err
 	}
