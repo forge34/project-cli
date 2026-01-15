@@ -2,32 +2,81 @@
 package generator
 
 import (
-	"fmt"
+	"embed"
+	"errors"
 	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
+	"strings"
 )
 
-type Generator struct{}
+// Embed the entire directory.
+//
+//go:embed templates/*
+var templates embed.FS
 
-func (g *Generator) Generate(tempName string, dir string) {
-	pwd, err := os.Getwd()
+type (
+	Generator struct{}
+)
+
+var ErrNotExist = errors.New("template doesn't exist")
+
+func (g *Generator) Generate(tempName string, dst string) error {
+	found, err := TemplateExists(templates, tempName)
 	if err != nil {
-		fmt.Println("Error getting current directory:", err)
-		os.Exit(1)
+		return err
 	}
 
-	fullPath := filepath.Join(pwd, dir)
+	if !found {
+		return ErrNotExist
+	}
 
-	fmt.Println(fullPath)
-	err = filepath.WalkDir(filepath.Join("./templates", tempName), func(path string, d fs.DirEntry, err error) error {
+	base := path.Join("templates", tempName)
+
+	sub, err := fs.Sub(templates, base)
+	if err != nil {
+		return err
+	}
+
+	prompts, err := ParseTemplate(sub, tempName)
+	if err != nil {
+		return err
+	}
+
+	var answers map[string]string
+	if len(prompts.Prompts) >= 1 {
+		answers, err = promptUser(prompts)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	err = fs.WalkDir(sub, ".", func(rel string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
-		fmt.Println(d)
-		return nil
+
+		if d.IsDir() {
+			return os.MkdirAll(filepath.Join(dst, rel), 0o755)
+		}
+
+		if d.Name() == "template.json" {
+			return nil
+		}
+
+		dstFile := filepath.Join(dst, rel)
+
+		if strings.HasSuffix(rel, ".tmpl") {
+			dstFile = strings.TrimSuffix(dstFile, ".tmpl")
+			return CopyFileWithTemplate(sub, rel, dstFile, answers)
+		}
+
+		return CopyFile(sub, rel, dstFile)
 	})
 	if err != nil {
-		panic(err)
+		return err
 	}
+	return nil
 }
