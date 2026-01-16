@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"io/fs"
 	"os"
 	"path"
@@ -48,8 +47,7 @@ var createCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-
-		fmt.Printf("Project generated at %s\n", dst)
+		generator.PrintCreate(templateName, dst)
 		return nil
 	},
 }

@@ -17,9 +17,8 @@ var ErrEmptyTemplate = errors.New("template name cannot be empty")
 
 func promptUser(prompts TemplateConfig) (map[string]string, error) {
 	reader := bufio.NewReader(os.Stdin)
-
 	ask := func(label string) (string, error) {
-		fmt.Print(label + " ")
+		fmt.Print(Success.Render("? ") + Header.Render(label) + " ")
 		s, err := reader.ReadString('\n')
 		if err != nil {
 			return "", err
@@ -101,14 +100,15 @@ func TemplateExists(fsys fs.FS, name string) (bool, error) {
 	return false, err
 }
 
-func ListTempaltes(fsys fs.FS) error {
+func ListTemplates(fsys fs.FS) ([]string, error) {
+	var templateList []string
 	maxDepth := 2
 	err := fs.WalkDir(fsys, ".", func(rel string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 
-		depth := strings.Count(rel, string(os.PathSeparator)) 
+		depth := strings.Count(rel, string(os.PathSeparator))
 
 		if d.Name() == "." {
 			return nil
@@ -119,14 +119,14 @@ func ListTempaltes(fsys fs.FS) error {
 		}
 
 		if d.IsDir() && depth == 1 {
-			fmt.Println(d.Name())
+			templateList = append(templateList, d.Name())
 		}
 
 		return nil
 	})
 	if err != nil {
-		return err
+		return []string{}, err
 	}
 
-	return nil
+	return templateList, nil
 }
