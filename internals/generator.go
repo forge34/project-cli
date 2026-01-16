@@ -1,5 +1,5 @@
-// Package generator provides functionality for creating projects from templates.
-package generator
+// Package internals provides functionality for creating projects from templates.
+package internals
 
 import (
 	"embed"
@@ -19,7 +19,7 @@ type (
 	Generator struct{}
 )
 
-func (g *Generator) Create(fsys fs.FS,  dst string) error {
+func (g *Generator) Create(fsys fs.FS, dst string) error {
 	prompts, err := ParseTemplate(fsys)
 	if err != nil {
 		return err

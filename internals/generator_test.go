@@ -1,4 +1,4 @@
-package generator_test
+package internals_test
 
 import (
 	"io/fs"
