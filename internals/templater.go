@@ -16,15 +16,9 @@ type TemplateConfig struct {
 	Prompts []TemplateVar `json:"prompts"`
 }
 
-var (
-	ErrEmptyTemplateName = errors.New("template name cannot be empty")
-	ErrTemplateNotFound  = errors.New("template.json not found")
-)
+var ErrTemplateNotFound = errors.New("template.json not found")
 
-func ParseTemplate(fsys fs.FS, name string) (TemplateConfig, error) {
-	if name == "" {
-		return TemplateConfig{}, ErrEmptyTemplateName
-	}
+func ParseTemplate(fsys fs.FS) (TemplateConfig, error) {
 	buf, err := fs.ReadFile(fsys, "template.json")
 	if err != nil {
 		return TemplateConfig{}, ErrTemplateNotFound

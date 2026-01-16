@@ -1,14 +1,19 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
 
 	generator "pjc/internals"
 
 	"github.com/spf13/cobra"
 )
+
+var ErrNotExist = errors.New("template doesn't exist")
 
 var createCmd = &cobra.Command{
 	Use:   "create <template> <destination>",
@@ -17,7 +22,14 @@ var createCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		templateName := args[0]
 		dstArg := args[1]
+		found, err := generator.TemplateExists(generator.Templates, templateName)
+		if err != nil {
+			return err
+		}
 
+		if !found {
+			return ErrNotExist
+		}
 		pwd, err := os.Getwd()
 		if err != nil {
 			return err
@@ -26,7 +38,13 @@ var createCmd = &cobra.Command{
 		dst := filepath.Join(pwd, dstArg)
 
 		g := generator.Generator{}
-		err = g.Create(templateName, dst)
+		base := path.Join("templates", templateName)
+
+		sub, err := fs.Sub(generator.Templates, base)
+		if err != nil {
+			return err
+		}
+		err = g.Create(sub, dst)
 		if err != nil {
 			return err
 		}

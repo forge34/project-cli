@@ -3,11 +3,9 @@ package generator
 
 import (
 	"embed"
-	"errors"
 	"fmt"
 	"io/fs"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 )
@@ -21,26 +19,8 @@ type (
 	Generator struct{}
 )
 
-var ErrNotExist = errors.New("template doesn't exist")
-
-func (g *Generator) Create(tempName string, dst string) error {
-	found, err := TemplateExists(Templates, tempName)
-	if err != nil {
-		return err
-	}
-
-	if !found {
-		return ErrNotExist
-	}
-
-	base := path.Join("templates", tempName)
-
-	sub, err := fs.Sub(Templates, base)
-	if err != nil {
-		return err
-	}
-
-	prompts, err := ParseTemplate(sub, tempName)
+func (g *Generator) Create(fsys fs.FS,  dst string) error {
+	prompts, err := ParseTemplate(fsys)
 	if err != nil {
 		return err
 	}
@@ -54,7 +34,7 @@ func (g *Generator) Create(tempName string, dst string) error {
 		return err
 	}
 
-	err = fs.WalkDir(sub, ".", func(rel string, d fs.DirEntry, err error) error {
+	err = fs.WalkDir(fsys, ".", func(rel string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -74,10 +54,10 @@ func (g *Generator) Create(tempName string, dst string) error {
 
 		if strings.HasSuffix(rel, ".tmpl") {
 			target = strings.TrimSuffix(target, ".tmpl")
-			return CopyFileWithTemplate(sub, rel, target, answers)
+			return CopyFileWithTemplate(fsys, rel, target, answers)
 		}
 
-		return CopyFile(sub, rel, target)
+		return CopyFile(fsys, rel, target)
 	})
 	if err != nil {
 		return err
