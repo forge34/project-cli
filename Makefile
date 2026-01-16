@@ -14,8 +14,14 @@ test:
 clean:
 	rm -rf bin
 
-install: build
+
+silent-build:
+	@go build -o $(BINARY) ./cmd/app
+
+install:
 	@echo "Installing $(APP) to $(TARGET)..."
-	sudo cp $(BINARY) $(TARGET)
-	sudo chmod +x $(TARGET)
+	@$(MAKE) silent-build
+	@sudo cp $(BINARY) $(TARGET)
+	@sudo chmod +x $(TARGET)
 	@echo "$(APP) installed. You can now run it globally."
+
