@@ -1,7 +1,7 @@
 # project-cli (pjc)
 
 ![Go](https://img.shields.io/badge/Go-%2300ADD8.svg?style=flat&logo=go&logoColor=white)
-[![License](https://img.shields.io/github/license/forge34/messaging-app-frontend?style=flat-square)](./LICENSE)
+[![License](https://img.shields.io/github/license/forge34/project-cli?style=flat-square)](./LICENSE)
 A compact CLI to scaffold projects from embedded templates with interactive variable substitution.
 
 Quick links
@@ -16,9 +16,9 @@ From source
 
 1. Clone:
 
-   ````bash
-   git clone <https://github.com/forge34/project-cli.git>```
-   ````
+```bash
+git clone <https://github.com/forge34/project-cli.git>```
+```
 
 2. Build:
 
@@ -27,7 +27,7 @@ go build -o bin/pjc ./cmd/app
 ```
 
 1. (Optional) Install system-wide:
-   `sudo cp bin/pjc /usr/local/bin/pjc && sudo chmod +x /usr/local/bin/pjc`
+`sudo cp bin/pjc /usr/local/bin/pjc && sudo chmod +x /usr/local/bin/pjc`
 
 Makefile conveniences
 
@@ -48,11 +48,10 @@ List templates:
 ```bash
 pjc list
 ```
-
-````
-
 Create a project:
-`pjc create <template> <destination>`
+```bash
+pjc create <template> <destination>
+```
 
 Behavior notes
 
