@@ -8,7 +8,7 @@ import (
 
 func TestParseTemplate(t *testing.T) {
 	fsys := fstest.MapFS{
-		"my-template/template.json": {
+		"template.json": {
 			Data: []byte(`
 {
   "prompts": [
@@ -27,7 +27,7 @@ func TestParseTemplate(t *testing.T) {
 		},
 	}
 
-	cfg, err := ParseTemplate(fsys, "my-template")
+	cfg, err := ParseTemplate(fsys)
 	if err != nil {
 		t.Fatalf("ParseTemplate returned error: %v", err)
 	}

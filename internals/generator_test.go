@@ -1,6 +1,8 @@
 package generator_test
 
 import (
+	"io/fs"
+	"path"
 	"path/filepath"
 	"testing"
 
@@ -8,13 +10,14 @@ import (
 )
 
 func TestGeneratesDir(t *testing.T) {
-	template := "express-ts"
-
 	tmpRoot := t.TempDir()
 	dst := filepath.Join(tmpRoot, "server")
+	base := path.Join("templates", "express-ts")
+
+	sub, _ := fs.Sub(generator.Templates, base)
 
 	g := generator.Generator{}
-	if err := g.Create(template, dst); err != nil {
+	if err := g.Create(sub, dst); err != nil {
 		t.Fatalf("Generate failed: %v", err)
 	}
 }
