@@ -1,6 +1,6 @@
 APP=pjc
-BINARY=bin/$(APP)
-TARGET=/usr/bin/$(APP)
+BINARY:=bin/$(APP)
+TARGET:= /usr/local/bin/$(APP)
 
 build:
 	go build -o $(BINARY) ./cmd/app
@@ -18,9 +18,8 @@ clean:
 silent-build:
 	@go build -o $(BINARY) ./cmd/app
 
-install:
+install: silent-build
 	@echo "Installing $(APP) to $(TARGET)..."
-	@$(MAKE) silent-build
 	@sudo cp $(BINARY) $(TARGET)
 	@sudo chmod +x $(TARGET)
 	@echo "$(APP) installed. You can now run it globally."
