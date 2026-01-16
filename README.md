@@ -62,7 +62,7 @@ pjc create <template> <destination>
 Behavior notes
 
 - Templates are embedded via Go's embed.FS (internals/templates).
-- If a template contains `template.json` the CLI prompts for variables.
+- a template must contain `template.json` for template configuration .
 - Files ending with `.tmpl` are processed and written without the `.tmpl` suffix.
 - Existing files in the destination are skipped.
 
