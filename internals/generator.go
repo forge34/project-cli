@@ -4,6 +4,7 @@ package generator
 import (
 	"embed"
 	"errors"
+	"fmt"
 	"io/fs"
 	"os"
 	"path"
@@ -57,23 +58,26 @@ func (g *Generator) Generate(tempName string, dst string) error {
 		if err != nil {
 			return err
 		}
-
+		target := filepath.Join(dst, rel)
 		if d.IsDir() {
-			return os.MkdirAll(filepath.Join(dst, rel), 0o755)
+			return os.MkdirAll(target, 0o755)
 		}
 
 		if d.Name() == "template.json" {
 			return nil
 		}
 
-		dstFile := filepath.Join(dst, rel)
-
-		if strings.HasSuffix(rel, ".tmpl") {
-			dstFile = strings.TrimSuffix(dstFile, ".tmpl")
-			return CopyFileWithTemplate(sub, rel, dstFile, answers)
+		if _, err := os.Stat(target); err == nil {
+			fmt.Printf("%s already exists,Skipping \n", rel)
+			return nil
 		}
 
-		return CopyFile(sub, rel, dstFile)
+		if strings.HasSuffix(rel, ".tmpl") {
+			target = strings.TrimSuffix(target, ".tmpl")
+			return CopyFileWithTemplate(sub, rel, target, answers)
+		}
+
+		return CopyFile(sub, rel, target)
 	})
 	if err != nil {
 		return err
