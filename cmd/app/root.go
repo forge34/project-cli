@@ -11,6 +11,6 @@ var RootCmd = &cobra.Command{
 	Short: "Project generator CLI",
 	Long:  "Generate projects from embedded templates with variable substitution",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Use 'pjc init <template> <destination>' or 'pjc help'")
+		fmt.Println("Use 'pjc create <template> <destination>' or 'pjc help'")
 	},
 }
