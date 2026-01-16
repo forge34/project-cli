@@ -6,6 +6,10 @@
 
 A CLI to scaffold projects from embedded templates with interactive variable substitution.
 
+<p align="center">
+  <img src=".assets/demo.gif" alt="pjc demo" width="700">
+</p>
+
 Quick links
 
 - List templates: `pjc list`
