@@ -4,13 +4,10 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"io"
 	"io/fs"
 	"os"
 	"path"
-	"path/filepath"
 	"strings"
-	"text/template"
 )
 
 var ErrEmptyTemplate = errors.New("template name cannot be empty")
@@ -36,51 +33,6 @@ func promptUser(prompts TemplateConfig) (map[string]string, error) {
 	}
 
 	return answers, nil
-}
-
-func CopyFileWithTemplate(
-	src fs.FS,
-	relPath string,
-	dstPath string,
-	vars map[string]string,
-) error {
-	tmpl, err := template.ParseFS(src, relPath)
-	if err != nil {
-		return err
-	}
-
-	if err := os.MkdirAll(filepath.Dir(dstPath), 0o755); err != nil {
-		return err
-	}
-
-	out, err := os.Create(dstPath)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	return tmpl.Execute(out, vars)
-}
-
-func CopyFile(src fs.FS, srcPath, dstPath string) error {
-	in, err := src.Open(srcPath)
-	if err != nil {
-		return err
-	}
-	defer in.Close()
-
-	if err := os.MkdirAll(filepath.Dir(dstPath), 0o755); err != nil {
-		return err
-	}
-
-	out, err := os.Create(dstPath)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	_, err = io.Copy(out, in)
-	return err
 }
 
 func TemplateExists(fsys fs.FS, name string) (bool, error) {
