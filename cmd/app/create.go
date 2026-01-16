@@ -26,7 +26,7 @@ var createCmd = &cobra.Command{
 		dst := filepath.Join(pwd, dstArg)
 
 		g := generator.Generator{}
-		err = g.Generate(templateName, dst)
+		err = g.Create(templateName, dst)
 		if err != nil {
 			return err
 		}

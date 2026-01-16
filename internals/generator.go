@@ -23,7 +23,7 @@ type (
 
 var ErrNotExist = errors.New("template doesn't exist")
 
-func (g *Generator) Generate(tempName string, dst string) error {
+func (g *Generator) Create(tempName string, dst string) error {
 	found, err := TemplateExists(Templates, tempName)
 	if err != nil {
 		return err

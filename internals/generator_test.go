@@ -14,7 +14,7 @@ func TestGeneratesDir(t *testing.T) {
 	dst := filepath.Join(tmpRoot, "server")
 
 	g := generator.Generator{}
-	if err := g.Generate(template, dst); err != nil {
+	if err := g.Create(template, dst); err != nil {
 		t.Fatalf("Generate failed: %v", err)
 	}
 }
