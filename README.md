@@ -2,7 +2,9 @@
 
 ![Go](https://img.shields.io/badge/Go-%2300ADD8.svg?style=flat&logo=go&logoColor=white)
 [![License](https://img.shields.io/github/license/forge34/project-cli?style=flat-square)](./LICENSE)
-A compact CLI to scaffold projects from embedded templates with interactive variable substitution.
+
+
+A CLI to scaffold projects from embedded templates with interactive variable substitution.
 
 Quick links
 
@@ -17,7 +19,7 @@ From source
 1. Clone:
 
 ```bash
-git clone <https://github.com/forge34/project-cli.git>```
+git clone https://github.com/forge34/project-cli.git
 ```
 
 2. Build:
@@ -69,10 +71,4 @@ Template format (template.json)
     { "name": "author", "prompt": "Author name" }
   ]
 }
-````
-
-Example
-
-```bash
-pjc create express-ts server
 ```
